@@ -1,3 +1,4 @@
+![Cabeçalho do Capsule-Render](https://capsule-render.vercel.app/api?type=waving&color=0:4B0082,100:BA55D3&height=300&section=header&text=Projeto%20Blog%20Pessoal&fontSize=70&fontColor=FFFFFF&animation=fadeIn&fontAlignY=38&desc=By%20@daviantanadev&descAlignY=60&descAlign=70)
 # 📝 Blog Pessoal — Backend ASP.NET Core
 
 API RESTful desenvolvida com ASP.NET Core 8, Entity Framework Core e MySQL, como parte de um projeto de aprendizado de desenvolvimento backend com o ecossistema .NET.
@@ -193,3 +194,5 @@ APIs suportadas: OpenAI, Gemini, Azure AI Services.
 - [ ] Hash de senha
 - [ ] Integração com IA
 - [ ] Testes unitários e de integração
+
+![Rodapé do Capsule-Render](https://capsule-render.vercel.app/api?type=waving&color=0:4B0082,100:BA55D3&height=100&section=footer)
