@@ -193,6 +193,6 @@ APIs suportadas: OpenAI, Gemini, Azure AI Services.
 - [x] Autenticação JWT
 - [x] Hash de senha
 - [x] Integração com IA com fallback local/external
-- [ ] Testes unitários e de integração
+- [x] Testes de integração dos endpoints principais
 
 ![Rodapé do Capsule-Render](https://capsule-render.vercel.app/api?type=waving&color=0:4B0082,100:BA55D3&height=100&section=footer)

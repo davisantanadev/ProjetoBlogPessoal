@@ -33,19 +33,19 @@ public class PostagensController : ControllerBase
     public ActionResult<IEnumerable<Postagem>> Get()
     {
         var postagens = _repository.GetPostagens();
-        if (!postagens.Any())
-            return NotFound("Nenhuma postagem encontrada.");
-
         return Ok(postagens);
     }
 
     [HttpGet("filtro")]
     public ActionResult<IEnumerable<Postagem>> GetByFiltro([FromQuery] int? autor, [FromQuery] int? tema)
     {
-        var resultado = _repository.GetPostagensByFiltro(autor, tema).ToList();
-        if (!resultado.Any())
-            return NotFound("Nenhuma postagem encontrada para os filtros informados.");
+        if (autor.HasValue && _usuarioRepository.GetUsuario(autor.Value) is null)
+            return NotFound($"Usuário com id = {autor.Value} não encontrado");
 
+        if (tema.HasValue && _temaRepository.GetTema(tema.Value) is null)
+            return NotFound($"Tema com id = {tema.Value} não encontrado");
+
+        var resultado = _repository.GetPostagensByFiltro(autor, tema).ToList();
         return Ok(resultado);
     }
 
@@ -68,50 +68,46 @@ public class PostagensController : ControllerBase
     }
 
     [HttpPut("{id:int}")]
-    public async Task<ActionResult> Put(int id, CancellationToken cancellationToken)
+    public async Task<ActionResult> Put(
+        int id,
+        [FromBody] PostagemUpdateDTO dto,
+        CancellationToken cancellationToken)
     {
-        string rawBody;
-        try
-        {
-            Request.EnableBuffering();
-            using var reader = new StreamReader(Request.Body, leaveOpen: true);
-            rawBody = await reader.ReadToEndAsync();
-            Request.Body.Position = 0;
-        }
-        catch (Exception ex)
-        {
-            return BadRequest($"Erro ao ler o corpo da requisição: {ex.Message}");
-        }
-
-        if (string.IsNullOrWhiteSpace(rawBody))
-            return BadRequest("Corpo da requisição vazio.");
-
-        PostagemDTO? dto;
-        try
-        {
-            dto = System.Text.Json.JsonSerializer.Deserialize<PostagemDTO>(rawBody, new System.Text.Json.JsonSerializerOptions { PropertyNameCaseInsensitive = true });
-        }
-        catch (Exception ex)
-        {
-            return BadRequest($"JSON inválido: {ex.Message}");
-        }
-
-        if (dto is null)
-            return BadRequest("DTO inválido ou ausente.");
         var existingPostagem = _repository.GetPostagem(id);
         if (existingPostagem is null)
             return NotFound($"Postagem com id = {id} não encontrada");
 
-        var tema = _temaRepository.GetTema(dto.TemaId);
+        var temaId = dto.TemaId.GetValueOrDefault() > 0
+            ? dto.TemaId
+            : existingPostagem.Tema?.TemaID;
+        if (temaId is null)
+            return BadRequest("Informe um tema valido para a postagem.");
+
+        var usuarioId = dto.UsuarioId.GetValueOrDefault() > 0
+            ? dto.UsuarioId
+            : existingPostagem.Usuario?.UsuarioId;
+        if (usuarioId is null)
+            return BadRequest("Informe um usuario valido para a postagem.");
+
+        var tema = _temaRepository.GetTema(temaId.Value);
         if (tema is null)
-            return NotFound($"Tema com id = {dto.TemaId} não encontrado");
+            return NotFound($"Tema com id = {temaId.Value} não encontrado");
 
-        var usuario = _usuarioRepository.GetUsuario(dto.UsuarioId);
+        var usuario = _usuarioRepository.GetUsuario(usuarioId.Value);
         if (usuario is null)
-            return NotFound($"Usuário com id = {dto.UsuarioId} não encontrado");
+            return NotFound($"Usuário com id = {usuarioId.Value} não encontrado");
 
-        var postagem = dto.ToEntity(tema, usuario);
-        postagem.PostagemId = id;
+        var postagem = new Postagem
+        {
+            PostagemId = id,
+            Titulo = dto.Titulo ?? existingPostagem.Titulo,
+            Texto = dto.Texto ?? existingPostagem.Texto,
+            ImagemURL = dto.ImagemURL ?? existingPostagem.ImagemURL,
+            Data = dto.Data ?? existingPostagem.Data,
+            Tema = tema,
+            Usuario = usuario
+        };
+
         await EnriquecerComIaAsync(postagem, cancellationToken);
 
         _repository.Update(id, postagem);

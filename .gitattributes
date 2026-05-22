@@ -1,0 +1,8 @@
+*.cs linguist-language=C#
+*.csproj linguist-detectable=false
+*.sln linguist-detectable=false
+*.json linguist-detectable=false
+*.http linguist-detectable=false
+*.properties linguist-detectable=false
+*.md linguist-detectable=false
+*.gitignore linguist-detectable=false

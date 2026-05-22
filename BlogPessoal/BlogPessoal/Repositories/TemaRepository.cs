@@ -1,7 +1,5 @@
 ﻿using BlogPessoal.Data;
 using BlogPessoal.Models;
-using Microsoft.EntityFrameworkCore;
-
 namespace BlogPessoal.Repositories;
 
 public class TemaRepository : ITemaRepository
@@ -37,9 +35,15 @@ public class TemaRepository : ITemaRepository
         {
             throw new ArgumentNullException(nameof(tema));
         }
-        _context.Entry(tema).State = EntityState.Modified;
+        var existing = _context.Temas.Find(id);
+        if (existing is null)
+        {
+            throw new ArgumentNullException(nameof(existing));
+        }
+
+        existing.Descricao = tema.Descricao;
         _context.SaveChanges();
-        return tema;
+        return existing;
     }
     public Tema? Delete(int id)
     {

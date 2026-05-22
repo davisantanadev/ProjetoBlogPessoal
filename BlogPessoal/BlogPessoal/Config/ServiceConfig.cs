@@ -33,7 +33,7 @@ public static class ServiceConfig
             ?? throw new InvalidOperationException("A connection string DefaultConnection nao foi configurada.");
 
         services.AddDbContext<AppDbContext>(options =>
-            options.UseMySql(mySqlConnection, ServerVersion.AutoDetect(mySqlConnection)));
+            options.UseMySql(mySqlConnection, ServerVersion.Parse("8.0.0-mysql")));
 
         return services;
     }

@@ -14,3 +14,7 @@ var app = builder.Build();
 app.UseApiConfig();
 
 app.Run();
+
+public partial class Program
+{
+}

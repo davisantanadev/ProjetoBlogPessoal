@@ -21,9 +21,6 @@ public class TemasController : ControllerBase
     public ActionResult<IEnumerable<Tema>> Get()
     {
         var temas = _repository.GetTemas().ToList();
-        if (!temas.Any())
-            return NotFound("Temas não encontrados!");
-
         return Ok(temas);
     }
 
@@ -40,6 +37,9 @@ public class TemasController : ControllerBase
     [HttpPost]
     public ActionResult Post(Tema tema)
     {
+        if (tema.TemaID != 0)
+            return BadRequest("O id do tema deve ser gerado pelo banco de dados.");
+
         var temaCriado = _repository.Create(tema);
 
         return new CreatedAtRouteResult(
@@ -51,9 +51,11 @@ public class TemasController : ControllerBase
     [HttpPut("{id:int}")]
     public ActionResult Put(int id, Tema tema)
     {
-        if (id != tema.TemaID)
-            return BadRequest($"Tema com id = {id} não encontrado");
+        var temaExistente = _repository.GetTema(id);
+        if (temaExistente is null)
+            return NotFound($"Tema com id = {id} não encontrado");
 
+        tema.TemaID = id;
         _repository.Update(id, tema);
         return Ok(tema);
     }
