@@ -13,7 +13,7 @@ public class UsuarioDTO
     public string? Email { get; set; }
 
     [Required]
-    [StringLength(20)]
+    [StringLength(100, MinimumLength = 6)]
     public string? Senha { get; set; }
 
     [StringLength(500)]

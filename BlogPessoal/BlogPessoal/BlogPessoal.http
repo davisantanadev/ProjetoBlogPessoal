@@ -1,6 +1,44 @@
 @BlogPessoal_HostAddress = http://localhost:5119
+@token = cole_o_token_aqui
 
 GET {{BlogPessoal_HostAddress}}/weatherforecast/
 Accept: application/json
 
 ###
+
+POST {{BlogPessoal_HostAddress}}/api/usuarios/cadastrar
+Content-Type: application/json
+
+{
+  "nome": "Davi",
+  "email": "davi@email.com",
+  "senha": "senha123",
+  "fotoURL": "https://exemplo.com/foto.png"
+}
+
+###
+
+POST {{BlogPessoal_HostAddress}}/api/usuarios/login
+Content-Type: application/json
+
+{
+  "email": "davi@email.com",
+  "senha": "senha123"
+}
+
+###
+
+GET {{BlogPessoal_HostAddress}}/api/temas
+Authorization: Bearer {{token}}
+Accept: application/json
+
+###
+
+POST {{BlogPessoal_HostAddress}}/api/ia/resumir
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "titulo": "Aprendendo ASP.NET Core",
+  "texto": "Estou criando uma API para um blog pessoal com autenticação JWT, Entity Framework Core e integração com inteligência artificial."
+}

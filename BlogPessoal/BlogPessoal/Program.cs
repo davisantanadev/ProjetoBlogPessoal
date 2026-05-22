@@ -1,39 +1,16 @@
-using BlogPessoal.Data;
-using BlogPessoal.Repositories;
-using Microsoft.EntityFrameworkCore;
-using System.Text.Json.Serialization;
+using BlogPessoal.Config;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-
-builder.Services.AddControllers()
-    .AddJsonOptions(options => 
-        options.JsonSerializerOptions
-            .ReferenceHandler = ReferenceHandler.IgnoreCycles);
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
-
-string MySqlConecction = builder.Configuration.GetConnectionString("DefaultConnection");
-builder.Services.AddDbContext<AppDbContext>(options =>
-                    options.UseMySql(MySqlConecction,
-                    ServerVersion.AutoDetect(MySqlConecction)));
-
-
-builder.Services.AddScoped<ITemaRepository, TemaRepository>();
-builder.Services.AddScoped<IPostagemRepository, PostagemRepository>();
-builder.Services.AddScoped<IUsuarioRepository, UsuarioRepository>();
+builder.Services.AddApiConfig();
+builder.Services.AddSwaggerConfig();
+builder.Services.AddDatabaseConfig(builder.Configuration);
+builder.Services.AddJwtConfig(builder.Configuration);
+builder.Services.AddAiConfig(builder.Configuration);
+builder.Services.AddDependencyInjectionConfig();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
- 
-app.UseHttpsRedirection();
-app.UseAuthorization();
-app.MapControllers();
+app.UseApiConfig();
+
 app.Run();

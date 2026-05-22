@@ -4,6 +4,7 @@
     <TargetFramework>net8.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+    <UserSecretsId>blog-pessoal-dotnet-local</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
@@ -15,10 +16,6 @@
     </PackageReference>
     <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="8.0.2" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="10.1.7" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Config\" />
   </ItemGroup>
 
 </Project>

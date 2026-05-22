@@ -17,7 +17,7 @@ public class TemaRepository : ITemaRepository
     {
         return _context.Temas.ToList();
     }
-    public Tema GetTema(int id)
+    public Tema? GetTema(int id)
     {
         return _context.Temas.FirstOrDefault(t => t.TemaID == id);
     }
@@ -41,7 +41,7 @@ public class TemaRepository : ITemaRepository
         _context.SaveChanges();
         return tema;
     }
-    public Tema Delete(int id)
+    public Tema? Delete(int id)
     {
         var tema = _context.Temas.Find(id);
         if (tema is null)

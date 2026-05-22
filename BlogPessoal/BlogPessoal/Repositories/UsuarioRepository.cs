@@ -11,10 +11,17 @@ public class UsuarioRepository : IUsuarioRepository
     {
         _context = context;
     }
-    public Usuario GetUsuario(int id)
+    public Usuario? GetUsuario(int id)
     {
         return _context.Usuarios.FirstOrDefault(u => u.UsuarioId == id);
     }
+
+    public Usuario? GetUsuarioByEmail(string email)
+    {
+        return _context.Usuarios
+            .FirstOrDefault(u => u.Email != null && u.Email.ToLower() == email.ToLower());
+    }
+
     public Usuario Create(Usuario user)
     {
         if (user is null)
@@ -31,18 +38,36 @@ public class UsuarioRepository : IUsuarioRepository
         {
             throw new ArgumentNullException(nameof(user));
         }
-        _context.Entry(user).State = EntityState.Modified;
+        var existing = _context.Usuarios.Find(id);
+        if (existing is null)
+            throw new ArgumentNullException(nameof(existing));
+
+        existing.Nome = user.Nome;
+        existing.Email = user.Email;
+        existing.Senha = user.Senha;
+        existing.FotoURL = user.FotoURL;
+
         _context.SaveChanges();
-        return user;
+        return existing;
     }
-    public Usuario Delete(int id)
+    public Usuario? Delete(int id)
     {
         var user = _context.Usuarios.Find(id);
         if (user is null)
         {
-            throw new ArgumentNullException(nameof(user));
+            return null;
         }
-        _context.Remove(user);
+
+        var userPosts = _context.Postagens
+            .Where(p => EF.Property<int>(p, "UsuarioId") == id)
+            .ToList();
+
+        if (userPosts.Any())
+        {
+            _context.Postagens.RemoveRange(userPosts);
+        }
+
+        _context.Usuarios.Remove(user);
         _context.SaveChanges();
         return user;
     }

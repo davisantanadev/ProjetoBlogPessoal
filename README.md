@@ -14,7 +14,7 @@ API RESTful desenvolvida com ASP.NET Core 8, Entity Framework Core e MySQL, como
 | Entity Framework Core | 8.0.2 |
 | Pomelo (MySQL) | 8.0.2 |
 | Swashbuckle (Swagger) | 10.1.7 |
-| JWT Bearer | 8.0.0 (em implementação) |
+| JWT Bearer | 8.0.0 |
 | MySQL | 8.x |
 
 ---
@@ -81,7 +81,7 @@ BlogPessoal/
 | POST | `/api/usuarios/cadastrar` | Cadastrar novo usuário |
 | PUT | `/api/usuarios/{id}` | Atualizar usuário |
 | DELETE | `/api/usuarios/{id}` | Excluir usuário |
-| POST | `/api/usuarios/login` | Login e geração de token JWT *(em implementação)* |
+| POST | `/api/usuarios/login` | Login e geração de token JWT |
 
 ### Tema `/api/temas`
 | Método | Rota | Descrição |
@@ -101,10 +101,10 @@ BlogPessoal/
 | PUT | `/api/postagens/{id}` | Atualizar postagem |
 | DELETE | `/api/postagens/{id}` | Excluir postagem |
 
-### IA `/api/ia` *(desafio — em implementação)*
+### IA `/api/ia`
 | Método | Rota | Descrição |
 |---|---|---|
-| POST | `/api/ia/resumir` | Gerar resumo, tags e categoria via IA |
+| POST | `/api/ia/resumir` | Gerar resumo, tags e categoria via IA usando local fallback ou serviço externo |
 
 ---
 
@@ -162,9 +162,9 @@ Controller → Repository → Banco de Dados
 
 ---
 
-## 🔒 Segurança *(em implementação)*
+## 🔒 Segurança
 
-- Autenticação JWT
+- Autenticação JWT implementada
 - Hash de senha com PasswordHasher
 - Controle de acesso com `[Authorize]`
 
@@ -186,13 +186,13 @@ APIs suportadas: OpenAI, Gemini, Azure AI Services.
 - [x] Models e entidades
 - [x] Migrations e banco de dados
 - [x] CRUD de Temas
-- [x] CRUD de Usuários (sem login)
+- [x] CRUD de Usuários com login e JWT
 - [x] CRUD de Postagens
 - [x] DTOs com métodos de extensão
 - [x] Filtro de postagens por autor e tema
-- [ ] Autenticação JWT
-- [ ] Hash de senha
-- [ ] Integração com IA
+- [x] Autenticação JWT
+- [x] Hash de senha
+- [x] Integração com IA com fallback local/external
 - [ ] Testes unitários e de integração
 
 ![Rodapé do Capsule-Render](https://capsule-render.vercel.app/api?type=waving&color=0:4B0082,100:BA55D3&height=100&section=footer)

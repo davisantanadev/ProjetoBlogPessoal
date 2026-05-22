@@ -19,7 +19,7 @@ public class Usuario
     public string? Email { get; set; }
 
     [Required]
-    [StringLength(20)]
+    [StringLength(255)]
     public string? Senha { get; set; }
 
     [StringLength(500)]

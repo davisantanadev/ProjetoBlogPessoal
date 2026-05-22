@@ -15,15 +15,22 @@ public class PostagemRepository : IPostagemRepository
 
     public IEnumerable<Postagem> GetPostagens()
     {
-        return _context.Postagens.AsNoTracking().ToList();
+        return _context.Postagens
+            .AsNoTracking()
+            .Include(p => p.Tema)
+            .Include(p => p.Usuario)
+            .ToList();
     }
 
-    public Postagem GetPostagem(int id)
+    public Postagem? GetPostagem(int id)
     {
-        return _context.Postagens.FirstOrDefault(p => p.PostagemId == id);
+        return _context.Postagens
+            .Include(p => p.Tema)
+            .Include(p => p.Usuario)
+            .FirstOrDefault(p => p.PostagemId == id);
     }
 
-    public Postagem Delete(int id)
+    public Postagem? Delete(int id)
     {
         var postagem = _context.Postagens.Find(id);
         if (postagem is null)
@@ -59,8 +66,25 @@ public class PostagemRepository : IPostagemRepository
 
     public Postagem Update(int id, Postagem postagem)
     {
-        _context.Entry(postagem).State = EntityState.Modified;
+        var existing = _context.Postagens
+            .Include(p => p.Tema)
+            .Include(p => p.Usuario)
+            .FirstOrDefault(p => p.PostagemId == id);
+
+        if (existing is null)
+            throw new ArgumentNullException(nameof(existing));
+
+        existing.Titulo = postagem.Titulo;
+        existing.Texto = postagem.Texto;
+        existing.ImagemURL = postagem.ImagemURL;
+        existing.Data = postagem.Data;
+        existing.ResumoIA = postagem.ResumoIA;
+        existing.TagIA = postagem.TagIA;
+        existing.CategoriaIA = postagem.CategoriaIA;
+        existing.Tema = postagem.Tema;
+        existing.Usuario = postagem.Usuario;
+
         _context.SaveChanges();
-        return postagem;
+        return existing;
     }
 }
